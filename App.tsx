@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import TabNavigator from './src/navegation/TabNavigator';
 import { createTables } from './src/database/database';
 import { openDatabaseSync } from 'expo-sqlite';
+import { ActivityIndicator, View } from 'react-native';
 
 const db = openDatabaseSync('pokedex.db');
 
@@ -19,8 +20,14 @@ export default function App() {
     initializeDatabase(); // Chama a inicialização do banco
   }, []);
 
+  // Verifica se o banco de dados está pronto antes de renderizar o aplicativo
+  // Se não estiver pronto, exibe um indicador de carregamento
   if (!isDbReady) {
-    return null;
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
   }
 
   return (
