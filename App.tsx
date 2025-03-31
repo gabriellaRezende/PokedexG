@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import TabNavigator from './src/navegation/TabNavigator';
-import { setupDatabase } from './src/database/database';
+import { createTables } from './src/database/database';
+import { openDatabaseSync } from 'expo-sqlite';
+
+const db = openDatabaseSync('pokedex.db');
 
 export default function App() {
-  setupDatabase(); //Aqui vai inicializar o Banco de dados
+  const [isDbReady, setIsDbReady] = useState(false); // Verifica se o banco de dados está pronto
+
+  useEffect(() => {
+    // Função para inicializar o banco de dados
+    async function initializeDatabase() {
+      await createTables(db);
+      setIsDbReady(true); // Depois que o banco for configurado, altere o estado
+    }
+
+    initializeDatabase(); // Chama a inicialização do banco
+  }, []);
+
+  if (!isDbReady) {
+    return null; // Ou pode retornar um componente de carregamento aqui enquanto o banco de dados é inicializado
+  }
 
   return (
     <>
@@ -13,4 +30,3 @@ export default function App() {
     </>
   );
 }
-
