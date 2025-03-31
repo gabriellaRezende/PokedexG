@@ -20,7 +20,7 @@ export default function App() {
   }, []);
 
   if (!isDbReady) {
-    return null; // Ou pode retornar um componente de carregamento aqui enquanto o banco de dados é inicializado
+    return null;
   }
 
   return (
