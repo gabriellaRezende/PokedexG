@@ -6,6 +6,7 @@ import PokedexScreen from "../screens/PokedexScreen";
 import LoginScreen from "../screens/LoginScreen"; 
 import ContaScreen from "../screens/ContaScreen";
 import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet } from "react-native";
 import PokedexStackNavigator from "./PokedexStackNavigator";
 
 const Tab = createBottomTabNavigator();
@@ -32,8 +33,9 @@ export default function TabNavigator() {
 
                     return <Ionicons name={iconName as any} size={size} color={color} />;
                 },
-                tabBarActiveTintColor: "tomato",
-                tabBarInactiveTintColor: "gray",
+                tabBarActiveTintColor: "#FFD900",
+                tabBarInactiveTintColor: "#94A1B2",
+                tabBarStyle: { backgroundColor: "#16161A" },
             })}
       >
         <Tab.Screen name="Home" component={HomeScreen} />
@@ -49,5 +51,4 @@ export default function TabNavigator() {
     </NavigationContainer>
   );
 }
-
 
