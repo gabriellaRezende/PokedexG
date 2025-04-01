@@ -36,16 +36,26 @@ export default function TabNavigator() {
                 tabBarActiveTintColor: "#FFD900",
                 tabBarInactiveTintColor: "#94A1B2",
                 tabBarStyle: { backgroundColor: "#16161A" },
+                tabBarLabelStyle: { color: "#fff" },
+                headerStyle: { backgroundColor: "#16161A" },
+                headerTitleStyle: { color: "#fff" }
             })}
       >
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Pokédex" component={PokedexStackNavigator} />
+        <Tab.Screen 
+          name="Pokédex" 
+          component={PokedexStackNavigator} 
+          options={{
+            headerShown: false, // Esconde o header padrão do Stack Navigator
+
+          }} 
+        />
         {isUserLoggedIn ? (
-            <>
-                <Tab.Screen name="Conta" component={ContaScreen} />
-            </>
+            <Tab.Screen name="Conta" component={ContaScreen}  />
         ) : ( 
-            <Tab.Screen name="Login" component={LoginScreen} />
+            <Tab.Screen name="Login" component={LoginScreen} options={{
+                tabBarStyle: { display: 'none' }, // Esconde a aba de login
+              }} />
         )}
       </Tab.Navigator>
     </NavigationContainer>
