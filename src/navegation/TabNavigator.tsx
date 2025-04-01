@@ -54,7 +54,7 @@ export default function TabNavigator() {
             <Tab.Screen name="Conta" component={ContaScreen}  />
         ) : ( 
             <Tab.Screen name="Login" component={LoginScreen} options={{
-                tabBarStyle: { display: 'none' }, // Esconde a aba de login
+              headerShown: false, // Esconde o header padrão do Stack Navigator
               }} />
         )}
       </Tab.Navigator>
