@@ -28,8 +28,6 @@ export default function PokedexStackNavigator(){
             }}>
             <Stack.Screen name="Pokedex" component={PokedexScreen} />
             <Stack.Screen name="PokemonDetail" component={PokemonDetailScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Register" component={RegisterScreen} />
         </Stack.Navigator>
     )
 }
