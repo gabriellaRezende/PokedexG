@@ -2,7 +2,7 @@ import { ParamListBase } from '@react-navigation/native';
 
 export type ParamList = ParamListBase & {
   Pokedex: undefined;
-  PokemonDetail: undefined;
+  PokemonDetail: { id: number };
 
   Login: undefined;  
   Register: undefined;
