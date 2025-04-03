@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image, Button } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 type RootStackParamList = {
@@ -29,26 +29,32 @@ export default function LoginScreen({ navigation, setIsUserLoggedIn }: loginScre
   };
 
   return (
-    <View>
-      <Image source={require('assets/XMLID_83_.svg')}/>
-      <Text>Login</Text> 
-      <Text> Bem Vindo de Volta!! {"\n"} Vamos iniciar nossa aventura?</Text>
+    <View style={styles.container}>
+      <Image source={require('/Users/gabriella.rzende/Library/Mobile Documents/com~apple~CloudDocs/Documents/ListaDeContatos/PokedexG/assets/logo.png')} style={styles.logo}/>
+      <Text style={styles.header}>Login</Text> 
+      <Text style={styles.description}> Bem Vindo de Volta!! {"\n"} Vamos iniciar nossa aventura?</Text>
 
-      <View>
+      <View style={styles.form}>
         <TextInput
+          style={styles.input}
           placeholder="Username"
           value={username}
           onChangeText={(text) => setUsername(text)} />
 
         <TextInput
+          style={styles.input}
           placeholder="Password"
           secureTextEntry={true}
-          value={username}
-          onChangeText={(text) => setUsername(text)} />
+          value={password}
+          onChangeText={(text) => setPassword(text)} />
       </View>
 
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Entrar</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-        <Text>Ainda não possui conta? <Text>Faça seu Registro</Text></Text>
+        <Text style={styles.registerLink}>Ainda não possui conta? <Text style={styles.link}>Faça seu Registro</Text></Text>
       </TouchableOpacity>
     </View>
   );
@@ -64,13 +70,56 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   },
-  logo: {},
-  header: {},
-  description: {},
-  form: {},
-  input: {},
-  button: {},
-  buttonText:{},
-  registerLink:{},
-  link:{},
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+    resizeMode: "contain",
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 10,
+  },
+  description: {
+    fontSize: 16,
+    color: "#fff",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  form: {
+    width: "100%",
+  },
+  input: {
+    height: 50,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    backgroundColor: "#fff",
+  },
+  button: {
+    backgroundColor: "#FFD900",
+    paddingVertical: 15,
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  buttonText:{
+    color: "#16161A",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  registerLink:{
+    marginTop: 10,
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 14,
+  },
+  link:{
+    color: "#FFD900",
+    fontWeight: "bold",
+  },
 });

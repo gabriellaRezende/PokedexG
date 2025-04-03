@@ -4,6 +4,7 @@ import TabNavigator from './src/navegation/TabNavigator';
 import { createTables } from './src/database/database';
 import { openDatabaseSync } from 'expo-sqlite';
 import { ActivityIndicator, View } from 'react-native';
+import { Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const db = openDatabaseSync('pokedex.db');
 
@@ -22,18 +23,26 @@ export default function App() {
 
   // Verifica se o banco de dados está pronto antes de renderizar o aplicativo
   // Se não estiver pronto, exibe um indicador de carregamento
-  if (!isDbReady) {
+  /* if (!isDbReady) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
-  }
+  } */
+
 
   return (
-    <>
-      <StatusBar style="auto" />
-      <TabNavigator />
-    </>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar style="auto" /> 
+      {isDbReady ? (
+        <TabNavigator />
+      ) : (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
+    </GestureHandlerRootView>
+    
   );
 }

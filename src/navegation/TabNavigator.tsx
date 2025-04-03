@@ -6,6 +6,7 @@ import LoginScreen from "../screens/LoginScreen";
 import ContaScreen from "../screens/ContaScreen";
 import { Ionicons } from "@expo/vector-icons";
 import PokedexStackNavigator from "./PokedexStackNavigator";
+import AuthStackNavigator from "./AuthStackNavigator";
 
 
 const Tab = createBottomTabNavigator();
@@ -61,8 +62,7 @@ export default function TabNavigator() {
         ) : ( 
             <Tab.Screen name="Login" options={{
               headerShown: false, // Esconde o header padrão do Stack Navigator
-              }}>
-                {props => <LoginScreen {...props} setIsUserLoggedIn={setIsUserLoggedIn} />}
+              }} component={AuthStackNavigator}>
               </Tab.Screen>
     
         )}
