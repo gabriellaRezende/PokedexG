@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Button } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+// Removed incorrect import of LoginScreenProps
 
 type RootStackParamList = {
   Login: undefined;
@@ -9,10 +10,11 @@ type RootStackParamList = {
   Home: undefined;
 };
 
-type loginScreenProps = NativeStackScreenProps<RootStackParamList, "Login"> & { setIsUserLoggedIn: (value: boolean) => void;
- };
+type LoginScreenProps = NativeStackScreenProps<RootStackParamList, "Login"> & {
+  setIsUserLoggedIn: (value: boolean) => void;
+};
 
-export default function LoginScreen({ navigation, setIsUserLoggedIn }: loginScreenProps) {
+export default function LoginScreen({ navigation, setIsUserLoggedIn }: LoginScreenProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -47,11 +49,12 @@ export default function LoginScreen({ navigation, setIsUserLoggedIn }: loginScre
           secureTextEntry={true}
           value={password}
           onChangeText={(text) => setPassword(text)} />
-      </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
+
+      </View>
 
       <TouchableOpacity onPress={() => navigation.navigate("Register")}>
         <Text style={styles.registerLink}>Ainda não possui conta? <Text style={styles.link}>Faça seu Registro</Text></Text>
@@ -71,9 +74,9 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
+    width: 300,
+    height: 300,
+    marginBottom: 0,
     resizeMode: "contain",
   },
   header: {

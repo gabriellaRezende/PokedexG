@@ -1,4 +1,5 @@
-import { ParamListBase } from '@react-navigation/native';
+import { ParamListBase, RouteProp } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export type ParamList = ParamListBase & {
   Pokedex: undefined;
@@ -7,4 +8,13 @@ export type ParamList = ParamListBase & {
   Login: undefined;  
   Register: undefined;
   // Adicione outras rotas e seus parâmetros aqui
+};
+
+export type LoginScreenProps = {
+  navigation: NativeStackNavigationProp<ParamList, "Login">;
+};
+
+export type RegisterScreenProps = {
+  navigation: NativeStackNavigationProp<ParamList, "Register">;
+  route: RouteProp<ParamList, "Register">;
 };
