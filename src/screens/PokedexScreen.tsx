@@ -27,6 +27,10 @@ export default function PokedexScreen() {
           const detailedPokemons = await Promise.all(data.results.map(async (pokemon: {name: string; url: string }) => {
             const pokemonResponse = await fetch(pokemon.url);
             const pokemonData = await pokemonResponse.json();
+            if (!pokemonData) {
+              throw new Error("Pokémon não encontrado");
+            }
+            // Extracting the necessary data
             return {
               id: pokemonData.id,
               name: pokemon.name,
