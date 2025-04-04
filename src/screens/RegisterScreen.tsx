@@ -32,7 +32,8 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
         <Image 
         source={require('../../assets/logo.png')} style={styles.logo} 
         />
-        <Text style={styles.description}> Faça parte da nossa comunidade e e crie sua própria Pokedéx!</Text>
+        <Text style={styles.header}>Registo</Text> 
+        <Text style={styles.description}> Faça parte da nossa comunidade e crie sua própria Pokedéx com os seus favoritos e capturados! </Text>
   
         <View style={styles.form}>
           <TextInput
@@ -67,7 +68,7 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
         </View>
   
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <Text style={styles.loginLink}>JA possui conta? <Text style={styles.link}>Faça seu Login</Text></Text>
+          <Text style={styles.loginLink}>Ja possui conta? <Text style={styles.link}>Faça seu Login</Text></Text>
         </TouchableOpacity>
       </View>
     );
@@ -84,16 +85,17 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
       alignItems: "center"
     },
     logo: {
-      width: 100,
-      height: 100,
+      width: 200,
+      height: 200,
       marginBottom: 20,
       resizeMode: "contain",
+      transform: [{ scale: 1.6 }],
     },
     header: {
-      fontSize: 24,
+      fontSize: 32,
       fontWeight: "bold",
       color: "#fff",
-      marginBottom: 10,
+      marginBottom: 20,
     },
     description: {
       fontSize: 16,
@@ -108,7 +110,7 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
       height: 50,
       borderColor: "#ccc",
       borderWidth: 1,
-      borderRadius: 5,
+      borderRadius: 4,
       paddingHorizontal: 10,
       marginBottom: 15,
       backgroundColor: "#fff",
@@ -121,7 +123,7 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
       marginTop: 10,
     },
     buttonText:{
-      color: "#16161A",
+      color: "#316BB3",
       fontWeight: "bold",
       fontSize: 16,
     },

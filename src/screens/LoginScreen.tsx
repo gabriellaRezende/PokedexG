@@ -78,13 +78,14 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   logo: {
-    width: 300,
-    height: 300,
+    width: 200,
+    height: 200,
     marginBottom: 0,
     resizeMode: "contain",
+    transform: [{ scale: 1.6 }],
   },
   header: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: "bold",
     color: "#fff",
     marginBottom: 10,
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   buttonText:{
-    color: "#16161A",
+    color: "#316BB3",
     fontWeight: "bold",
     fontSize: 16,
   },
