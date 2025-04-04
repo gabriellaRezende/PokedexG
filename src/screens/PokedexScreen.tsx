@@ -1,87 +1,112 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image } from "react-native";
-import { ParamList } from "../navegation/navegation"; // Importando o tipo ParamList
-import { FlatList } from "react-native-gesture-handler";
-import { types } from "@babel/core";
+import { useState, useEffect } from "react";
+import { View, FlatList, TouchableOpacity, Image, Text, StyleSheet } from "react-native";
 
-interface Pokemon {
-  types: string[];
+// Define o tipo do Pokémon
+type Pokemon = {
   id: number;
   name: string;
-  type: string;
+  types: string[];
   image: string;
-}
+};
+
+import { ParamList } from "../navegation/navegation";
 
 export default function PokedexScreen() {
-    const navigation = useNavigation<NavigationProp<ParamList>>(); // Usando o tipo ParamList para tipar a navegação
-    const [pokemonList, setPokemonList] = useState<Pokemon[]>([]); // Usando o tipo Pokemon para tipar o estado
+  const navigation = useNavigation<NavigationProp<ParamList>>();
+  const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [offset, setOffset] = useState(0); // Controle de offset para paginação
+  const [hasMore, setHasMore] = useState(true); // Controle para saber se há mais dados
 
-    useEffect(() => {
-      async function fetchPokemon() {
-        try {
-          // Fetching Pokémon data from the API
-          const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=5");
-          const data = await response.json()
+  // Função para buscar Pokémon da API
+  const fetchPokemon = async () => {
+    if (isLoading || !hasMore) return; // Evita múltiplas requisições simultâneas ou requisições desnecessárias
 
-          const detailedPokemons = await Promise.all(data.results.map(async (pokemon: {name: string; url: string }) => {
-            const pokemonResponse = await fetch(pokemon.url);
-            const pokemonData = await pokemonResponse.json();
-            return {
-              id: pokemonData.id,
-              name: pokemon.name,
-              types: pokemonData.types.map((t: any) => t.type.name),
-              image: pokemonData.sprites.front_default || "",
-            };
-          }));
-          setPokemonList(detailedPokemons);
-        } catch (error) {
-          console.error("Error ao buscar Pokémon:", error);
-        }
+    try {
+      setIsLoading(true);
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=10&offset=${offset}`);
+      if (!response.ok) {
+        throw new Error(`Erro na API: ${response.status}`);
       }
-      fetchPokemon();
-    }, []);
+      const data = await response.json();
 
-    //Incluir tipos para chips com um switch 
-    const getTypeChipColor = (type: string): string => {
-      switch (type.toLowerCase()) {
-        case "fire":
-          return "#F08030";
-        case "water":
-          return "#6890F0";
-        case "grass":
-          return "#78C850";
-        case "electric":
-          return "#F8D030";
-        case "psychic":
-          return "#F85888";
-        case "ice":
-          return "#98D8D8";
-        case "dragon":
-          return "#7038F8";
-        case "dark":
-          return "#705848";
-        case "fairy":
-          return "#EE99AC";
-        default:
-          return "#A8A878";
-      }
+      const detailedPokemons = await Promise.all(
+        data.results.map(async (pokemon: { name: string; url: string }) => {
+          const pokemonResponse = await fetch(pokemon.url);
+          if (!pokemonResponse.ok) {
+            throw new Error(`Erro ao buscar detalhes do Pokémon: ${pokemonResponse.status}`);
+          }
+          const pokemonData = await pokemonResponse.json();
+          return {
+            id: pokemonData.id,
+            name: pokemon.name,
+            types: pokemonData.types.map((t: { type: { name: string } }) => t.type.name),
+            image: pokemonData.sprites.front_default || "",
+          };
+        })
+      );
+
+      setPokemonList((prevList) => [...prevList, ...detailedPokemons]); // Adiciona os novos Pokémon à lista existente
+      setOffset((prevOffset) => prevOffset + 10); // Incrementa o offset para a próxima página
+      setHasMore(data.next !== null); // Verifica se há mais dados para carregar
+    } catch (error) {
+      console.error("Erro ao buscar Pokémon:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Busca inicial ao montar o componente
+  useEffect(() => {
+    fetchPokemon();
+  }, []);
+
+  // Função para determinar a cor do elemento com base no tipo do Pokémon
+  function getTypeChipColor(type: string): import("react-native").ColorValue {
+    const typeColors: { [key: string]: string } = {
+      fire: "#F08030",
+      water: "#6890F0",
+      grass: "#78C850",
+      electric: "#F8D030",
+      ice: "#98D8D8",
+      fighting: "#C03028",
+      poison: "#A040A0",
+      ground: "#E0C068",
+      flying: "#A890F0",
+      psychic: "#F85888",
+      bug: "#A8B820",
+      rock: "#B8A038",
+      ghost: "#705898",
+      dragon: "#7038F8",
+      dark: "#705848",
+      steel: "#B8B8D0",
+      fairy: "#EE99AC",
+      normal: "#A8A878",
     };
 
+    return typeColors[type] || "#A8A8A8"; // Cor padrão: cinza
+  }
 
   return (
     <View style={styles.container}>
-      <FlatList 
-        data={pokemonList} 
-        keyExtractor={(item) => item.id.toString()} 
+      <FlatList
+        data={pokemonList}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("PokemonDetail", { id: item.id})}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => navigation.navigate("PokemonDetail", { id: item.id })}
+          >
             <Image source={{ uri: item.image }} style={styles.image} />
             <View>
-              <Text style={styles.name}> {item.name}</Text>
+              <Text style={styles.name}>{item.name}</Text>
               <View style={styles.typesContainer}>
                 {item.types.map((type, index) => (
-                  <View key={index} style={[styles.typeChip, { backgroundColor: getTypeChipColor(type) }]}>
+                  <View
+                    key={index}
+                    style={[styles.typeChip, { backgroundColor: getTypeChipColor(type) }]}
+                  >
                     <Text style={styles.typeChipText}>{type}</Text>
                   </View>
                 ))}
@@ -89,18 +114,24 @@ export default function PokedexScreen() {
             </View>
           </TouchableOpacity>
         )}
+        onEndReached={fetchPokemon} // Chama a função para carregar mais Pokémon
+        onEndReachedThreshold={0.5} // Define o quão próximo do final da lista o evento é disparado
+        ListFooterComponent={
+          isLoading ? <Text style={{ color: "#FFFFFE", textAlign: "center" }}>Carregando...</Text> : null
+        } // Exibe um indicador de carregamento no final da lista
       />
     </View>
   );
 }
 
+// Estilos do componente
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#393D43",
     padding: 10,
   },
-  card:{
+  card: {
     flexDirection: "row",
     backgroundColor: "#16161A",
     borderRadius: 4,
@@ -114,14 +145,14 @@ const styles = StyleSheet.create({
     height: 100,
     marginRight: 0,
   },
-  name:{
+  name: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#FFFFFE",
   },
-  typesContainer:{
+  typesContainer: {
     flexDirection: "row",
-    paddingTop: 24, 
+    paddingTop: 24,
   },
   typeChip: {
     paddingVertical: 4,
@@ -129,7 +160,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginRight: 8,
   },
-  typeChipText:{
+  typeChipText: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#FFFFFE",

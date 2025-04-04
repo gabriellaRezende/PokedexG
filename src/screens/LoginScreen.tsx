@@ -30,9 +30,13 @@ export default function LoginScreen({ navigation, setIsUserLoggedIn }: LoginScre
     navigation.replace("Home");
   };
 
+// gabi aqui eu coloque esse uri para buscar uma imagem da internet, mas você pode colocar a sua imagem local
+// o react não buscaas imagens da web ou de outro lugar sem isso
   return (
     <View style={styles.container}>
-      <Image source={require('/Users/gabriella.rzende/Library/Mobile Documents/com~apple~CloudDocs/Documents/ListaDeContatos/PokedexG/assets/logo.png')} style={styles.logo}/>
+      <Image 
+      source={{ uri: 'https://loodibee.com/wp-content/uploads/International-Pokemon-logo.png' }} style={styles.logo} 
+      />
       <Text style={styles.header}>Login</Text> 
       <Text style={styles.description}> Bem Vindo de Volta!! {"\n"} Vamos iniciar nossa aventura?</Text>
 

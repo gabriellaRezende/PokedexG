@@ -26,9 +26,12 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
     navigation.replace("Home");
   };
   
+  // gabi aqui eu coloque esse uri para buscar uma imagem da internet, mas você pode colocar a sua imagem local
   return (
     <View style={styles.container}>
-        <Image source={require('/Users/gabriella.rzende/Library/Mobile Documents/com~apple~CloudDocs/Documents/ListaDeContatos/PokedexG/assets/logo.png')} style={styles.logo}/>
+        <Image 
+        source={{ uri: 'https://loodibee.com/wp-content/uploads/International-Pokemon-logo.png' }} style={styles.logo} 
+        />
         <Text style={styles.description}> Faça parte da nossa comunidade e e crie sua própria Pokedéx!</Text>
   
         <View style={styles.form}>
