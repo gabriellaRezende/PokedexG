@@ -32,7 +32,7 @@ export default function LoginScreen({ navigation, setIsUserLoggedIn }: LoginScre
 
   return (
     <View style={styles.container}>
-      <Image source={require('/Users/gabriella.rzende/Library/Mobile Documents/com~apple~CloudDocs/Documents/ListaDeContatos/PokedexG/assets/logo.png')} style={styles.logo}/>
+      <Image source={require('../../assets/logo.png')} style={styles.logo}/>
       <Text style={styles.header}>Login</Text> 
       <Text style={styles.description}> Bem Vindo de Volta!! {"\n"} Vamos iniciar nossa aventura?</Text>
 

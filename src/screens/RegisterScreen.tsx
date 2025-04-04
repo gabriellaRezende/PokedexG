@@ -28,7 +28,7 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
   
   return (
     <View style={styles.container}>
-        <Image source={require('/Users/gabriella.rzende/Library/Mobile Documents/com~apple~CloudDocs/Documents/ListaDeContatos/PokedexG/assets/logo.png')} style={styles.logo}/>
+        <Image source={require('../../assets/logo.png')} style={styles.logo}/>
         <Text style={styles.description}> Faça parte da nossa comunidade e e crie sua própria Pokedéx!</Text>
   
         <View style={styles.form}>
