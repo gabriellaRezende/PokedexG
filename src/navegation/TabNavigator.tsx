@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import HomeScreen from "../screens/HomeScreen"; 
 import LoginScreen from "../screens/LoginScreen"; 
 import ContaScreen from "../screens/ContaScreen";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,9 +19,7 @@ export default function TabNavigator() {
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ color, size }) => {
                     let iconName=
-                        route.name === "Home"
-                            ? "home"
-                            : route.name === "Pokédex"
+                        route.name === "Pokédex"
                             ? "list"
                             : route.name === "Conta"
                             ? "person"
@@ -48,7 +45,6 @@ export default function TabNavigator() {
                 headerTitleStyle: { color: "#fff" }
             })}
       >
-        <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen 
           name="Pokédex" 
           component={PokedexStackNavigator} 

@@ -5,7 +5,7 @@ import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from "reac
 type RootStackParamList = {
   Login: undefined;
   Register: undefined;
-  Home: undefined;
+  PokedexScreen: undefined;
 };
 
 type RegisterScreenProps = NativeStackScreenProps<RootStackParamList, 'Register'>;
@@ -23,14 +23,14 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
       return;
     }
     alert("Registro realizado com sucesso!");
-    navigation.replace("Home");
+    navigation.replace("PokedexScreen");
   };
   
   // gabi aqui eu coloque esse uri para buscar uma imagem da internet, mas você pode colocar a sua imagem local
   return (
     <View style={styles.container}>
         <Image 
-        source={{ uri: 'https://loodibee.com/wp-content/uploads/International-Pokemon-logo.png' }} style={styles.logo} 
+        source={require('../../assets/logo.png')} style={styles.logo} 
         />
         <Text style={styles.description}> Faça parte da nossa comunidade e e crie sua própria Pokedéx!</Text>
   

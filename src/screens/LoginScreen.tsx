@@ -7,7 +7,7 @@ import { TextInput } from "react-native-gesture-handler";
 type RootStackParamList = {
   Login: undefined;
   Register: undefined;
-  Home: undefined;
+  PokedexScreen: undefined;
 };
 
 type LoginScreenProps = NativeStackScreenProps<RootStackParamList, "Login"> & {
@@ -27,7 +27,7 @@ export default function LoginScreen({ navigation, setIsUserLoggedIn }: LoginScre
     // Simulação de autenticação
     alert("Login realizado com sucesso");
     setIsUserLoggedIn(true);
-    navigation.replace("Home");
+    navigation.replace("PokedexScreen");
   };
 
 // gabi aqui eu coloque esse uri para buscar uma imagem da internet, mas você pode colocar a sua imagem local
@@ -35,7 +35,7 @@ export default function LoginScreen({ navigation, setIsUserLoggedIn }: LoginScre
   return (
     <View style={styles.container}>
       <Image 
-      source={{ uri: 'https://loodibee.com/wp-content/uploads/International-Pokemon-logo.png' }} style={styles.logo} 
+      source={require('../../assets/logo.png')} style={styles.logo} 
       />
       <Text style={styles.header}>Login</Text> 
       <Text style={styles.description}> Bem Vindo de Volta!! {"\n"} Vamos iniciar nossa aventura?</Text>
