@@ -5,6 +5,7 @@ import { createTables } from './src/database/database';
 import { openDatabaseSync } from 'expo-sqlite';
 import { ActivityIndicator, View } from 'react-native';
 import { Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
+import { AuthProvider } from './src/navegation/AuthContext';
 
 const db = openDatabaseSync('pokedex.db');
 
@@ -36,7 +37,9 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="auto" /> 
       {isDbReady ? (
-        <TabNavigator />
+        <AuthProvider>
+          <TabNavigator />
+        </AuthProvider>
       ) : (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size="large" color="#0000ff" />

@@ -6,12 +6,13 @@ import ContaScreen from "../screens/ContaScreen";
 import { Ionicons } from "@expo/vector-icons";
 import PokedexStackNavigator from "./PokedexStackNavigator";
 import AuthStackNavigator from "./AuthStackNavigator";
+import { useAuth } from "./AuthContext";
 
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const { isUserLoggedIn } = useAuth();
 
   return (
     <NavigationContainer>

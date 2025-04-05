@@ -1,16 +1,18 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from "react-native";
+import { useAuth } from "../navegation/AuthContext";
 
 type RootStackParamList = {
   Login: undefined;
   Register: undefined;
-  PokedexScreen: undefined;
+  Pokedex: undefined;
 };
 
 type RegisterScreenProps = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
 export default function RegisterScreen({ navigation }: RegisterScreenProps) {
+  const { login } = useAuth();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,11 +24,12 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
       alert("Todos os campos são obrigatórios.");
       return;
     }
-    alert("Registro realizado com sucesso!");
-    navigation.replace("PokedexScreen");
+
+    // Incluir depois o que salvar no SQLite
+    login(); //Muda o estado para "logado"
+   // navigation.replace("Pokedex");
   };
   
-  // gabi aqui eu coloque esse uri para buscar uma imagem da internet, mas você pode colocar a sua imagem local
   return (
     <View style={styles.container}>
         <Image 

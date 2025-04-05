@@ -2,36 +2,36 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Button } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import { useAuth } from "../navegation/AuthContext";
 // Removed incorrect import of LoginScreenProps
 
 type RootStackParamList = {
   Login: undefined;
   Register: undefined;
-  PokedexScreen: undefined;
+  Pokedex: undefined;
 };
 
-type LoginScreenProps = NativeStackScreenProps<RootStackParamList, "Login"> & {
-  setIsUserLoggedIn: (value: boolean) => void;
-};
+type LoginScreenProps = NativeStackScreenProps<RootStackParamList, "Login">;
 
-export default function LoginScreen({ navigation, setIsUserLoggedIn }: LoginScreenProps) {
+export default function LoginScreen({ navigation }: LoginScreenProps) {
+  const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
     if (!username || !password) {
-      alert("Preencha todos os campos");
+      alert("Todos os campos são obrigatórios");
       return;
     }
     
-    // Simulação de autenticação
-    alert("Login realizado com sucesso");
-    setIsUserLoggedIn(true);
-    navigation.replace("PokedexScreen");
+    // Simulação de autenticação e depois validar com o SQLite
+
+    //alert("Login realizado com sucesso");
+    login(); //atualiza o estado global
+    
+    //navigation.replace("Pokedex"); >>>>> foi retirado pq esta sendo chamado em um ponto onde o Pokedex não existe diretamente, ou seja, o react navigation renderiza sozinho sem precisar do replace
   };
 
-// gabi aqui eu coloque esse uri para buscar uma imagem da internet, mas você pode colocar a sua imagem local
-// o react não buscaas imagens da web ou de outro lugar sem isso
   return (
     <View style={styles.container}>
       <Image 
