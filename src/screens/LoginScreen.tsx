@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Button } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useAuth } from "../navegation/AuthContext";
-import db from "../database/database";
 // Removed incorrect import of LoginScreenProps
 
 type RootStackParamList = {
@@ -19,30 +18,18 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     if (!username || !password) {
       alert("Todos os campos são obrigatórios");
       return;
     }
-
-    try {
-      const result = await db.getFirstAsync(
-        `SELECT * FROM users WHERE login = ? AND password = ?`, 
-        [username, password]
-      );
-      
-      if (!result) {
-        alert ("Login ou senha inválidos.")
-        return;
-      }
-
-      login(); //atualiza o estado global
-
-    } catch (error) {
-      console.error("Erro ao tentar login:", error);
-      alert("Erro ao fazer login");
-    }
     
+    // Simulação de autenticação e depois validar com o SQLite
+
+    //alert("Login realizado com sucesso");
+    login(); //atualiza o estado global
+    
+    //navigation.replace("Pokedex"); >>>>> foi retirado pq esta sendo chamado em um ponto onde o Pokedex não existe diretamente, ou seja, o react navigation renderiza sozinho sem precisar do replace
   };
 
   return (

@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from "react-native";
 import { useAuth } from "../navegation/AuthContext";
-import db from "../database/database";
 
 type RootStackParamList = {
   Login: undefined;
@@ -20,41 +19,15 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleRegister = async () => {
+  const handleRegister = () => {
     if (!name || !email || !username || !password) {
       alert("Todos os campos são obrigatórios.");
       return;
     }
 
-    // Verifica se o email tem o formato correto 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
-    if (!emailRegex.test(email)) {
-      alert("Por favor, insira um email válido.");
-      return;
-    }
-
-    try {
-      const result = await db.getAllAsync(`SELECT * FROM users WHERE email = ? OR login = ?`, [email, username]);
-
-      if (result.length > 0) {
-        alert("Email ou login já cadastrados.");
-        return;
-      }
-
-      await db.runAsync(
-        `INSERT INTO users (name, email, login, password) VALUES (?, ?, ?, ?)`,
-      [name, email, username, password]
-      );
-
-      login(); //Muda o estado para "logado"
-
-
-    } catch (error) {
-      console.error("Erro ao verificar usuário:", error);
-      alert("Ocorreu um erro ao registrar. Tente novamente.");
-      return;
-    }
-  
+    // Incluir depois o que salvar no SQLite
+    login(); //Muda o estado para "logado"
+   // navigation.replace("Pokedex");
   };
   
   return (
