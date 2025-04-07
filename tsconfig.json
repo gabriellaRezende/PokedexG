@@ -1,8 +1,12 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "moduleResolution": "node16", // Ou "node16" para versões mais recentes
+    "target": "esnext",
+    "module": "Node16",
     "strict": true,
     "esModuleInterop": true,
-    "jsx": "react-native"
+    "skipLibCheck": true, // Ignora verificações de tipo em arquivos de declaração
+    "resolveJsonModule": true
   }
 }

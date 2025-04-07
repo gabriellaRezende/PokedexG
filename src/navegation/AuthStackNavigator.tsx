@@ -6,6 +6,7 @@ import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import { ParamList } from "./navegation";
 
+
 const AuthStack = createNativeStackNavigator<ParamList>();
 
 export default function AuthStackNavigator() {
