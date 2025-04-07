@@ -1,6 +1,14 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useState, useEffect } from "react";
 import { View, FlatList, TouchableOpacity, Image, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import * as SQLite from "expo-sqlite";
+
+import { ParamList } from "../navegation/navegation";
+
+
+const db = SQLite.openDatabaseSync("database.db");
+
 
 // Define o tipo do Pokémon
 type Pokemon = {
@@ -10,7 +18,10 @@ type Pokemon = {
   image: string;
 };
 
-import { ParamList } from "../navegation/navegation";
+// Define o tipo do favorito
+type Favorite = {
+  pokemon_id: number;
+};
 
 export default function PokedexScreen() {
   const navigation = useNavigation<NavigationProp<ParamList>>();
@@ -18,6 +29,8 @@ export default function PokedexScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [offset, setOffset] = useState(0); // Controle de offset para paginação
   const [hasMore, setHasMore] = useState(true); // Controle para saber se há mais dados
+  const [favoriteIds, setFavoriteIds] = useState<number[]>([]); // Estado para IDs de Pokémon favoritos
+
 
   // Função para buscar Pokémon da API
   const fetchPokemon = async () => {
@@ -50,7 +63,7 @@ export default function PokedexScreen() {
       setPokemonList((prevList) => [...prevList, ...detailedPokemons]); // Adiciona os novos Pokémon à lista existente
       setOffset((prevOffset) => prevOffset + 10); // Incrementa o offset para a próxima página
       setHasMore(data.next !== null); // Verifica se há mais dados para carregar
-    
+
     } catch (error) {
       console.error("Erro ao buscar Pokémon:", error);
     } finally {
@@ -58,9 +71,58 @@ export default function PokedexScreen() {
     }
   };
 
+  //Favoritos do banco
+
+  const loadFavorites = () => {
+    db.transaction((tx: SQLite.SQLTransaction) => {
+      tx.executeSql(
+        "SELECT pokemon_id FROM favorites",
+        [],
+        (_: SQLite.SQLTransaction, result: SQLite.SQLResultSet) => {
+          const ids = result.rows._array.map((row: Favorite) => row.pokemon_id);
+          setFavoriteIds(ids);
+        },
+        (_: SQLite.SQLTransaction, error: SQLite.SQLError) => {
+          console.error("Erro ao buscar favoritos:", error);
+          return false;
+        }
+      );
+    });
+  };
+
+  //Alternar o favorito 
+  const toggleFavorite = (id: number) => {
+    const isFavorite = favoriteIds.includes(id);
+
+    db.transaction((tx: SQLite.SQLTransaction) => {
+      if (isFavorite) {
+        tx.executeSql(
+          "DELETE FROM favorites WHERE pokemon_id = ?",
+          [id],
+          () => setFavoriteIds((prev) => prev.filter((favId) => favId !== id)),
+          (_: SQLite.SQLTransaction, error: SQLite.SQLError) => {
+            console.error("Erro ao remover dos favoritos:", error);
+            return false;
+          }
+        );
+      } else {
+        tx.executeSql(
+          "INSERT INTO favorites (pokemon_id) VALUES (?)",
+          [id],
+          () => setFavoriteIds((prev) => [...prev, id]),
+          (_: SQLite.SQLTransaction, error: SQLite.SQLError) => {
+            console.error("Erro ao adicionar aos favoritos:", error);
+            return false;
+          }
+        );
+      }
+    });
+  };
+
   // Busca inicial ao montar o componente
   useEffect(() => {
     fetchPokemon();
+    loadFavorites();
   }, []);
 
   // Função para determinar a cor do elemento com base no tipo do Pokémon
@@ -85,8 +147,8 @@ export default function PokedexScreen() {
       fairy: "#EE99AC",
       normal: "#A8A878",
     };
-
     return typeColors[type] || "#A8A8A8"; // Cor padrão: cinza
+
   }
 
   return (
@@ -113,8 +175,16 @@ export default function PokedexScreen() {
                 ))}
               </View>
             </View>
+            <TouchableOpacity onPress={() => toggleFavorite(item.id)} style={{ marginLeft: 8, padding: 8 }}>
+              <Ionicons
+                name={favoriteIds.includes(item.id) ? "star" : "star-outline"}
+                size={28}
+                color="#FFD700"
+              />
+            </TouchableOpacity>
           </TouchableOpacity>
         )}
+
         onEndReached={fetchPokemon} // Chama a função para carregar mais Pokémon
         onEndReachedThreshold={0.5} // Define o quão próximo do final da lista o evento é disparado
         ListFooterComponent={
@@ -166,3 +236,4 @@ const styles = StyleSheet.create({
     color: "#FFFFFE",
   },
 });
+
