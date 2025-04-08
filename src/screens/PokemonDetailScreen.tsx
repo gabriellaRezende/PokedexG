@@ -151,6 +151,7 @@ export default function PokemonDetailScreen() {
       <Text style={styles.name}>{pokemonDetails.name.toUpperCase()}</Text>
       <Image source={{ uri: pokemonDetails.image3D }} style={styles.image3D} />
         <Text style={styles.descriptionText}>{pokemonDetails.description}</Text>
+       
         {/* Botão de captura/liberação */}
         <TouchableOpacity
           style={styles.captureButton}
