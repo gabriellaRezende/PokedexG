@@ -1,38 +1,69 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from "react-native";
+import { useAuth } from "../navegation/AuthContext";
+import db from "../database/database";
 
 type RootStackParamList = {
   Login: undefined;
   Register: undefined;
-  Home: undefined;
+  Pokedex: undefined;
 };
 
 type RegisterScreenProps = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
 export default function RegisterScreen({ navigation }: RegisterScreenProps) {
+  const { login } = useAuth();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!name || !email || !username || !password) {
       alert("Todos os campos são obrigatórios.");
       return;
     }
-    alert("Registro realizado com sucesso!");
-    navigation.replace("Home");
+
+    // Verifica se o email tem o formato correto 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+    if (!emailRegex.test(email)) {
+      alert("Por favor, insira um email válido.");
+      return;
+    }
+
+    try {
+      const result = await db.getAllAsync(`SELECT * FROM users WHERE email = ? OR login = ?`, [email, username]);
+
+      if (result.length > 0) {
+        alert("Email ou login já cadastrados.");
+        return;
+      }
+
+      await db.runAsync(
+        `INSERT INTO users (name, email, login, password) VALUES (?, ?, ?, ?)`,
+      [name, email, username, password]
+      );
+
+      login(); //Muda o estado para "logado"
+
+
+    } catch (error) {
+      console.error("Erro ao verificar usuário:", error);
+      alert("Ocorreu um erro ao registrar. Tente novamente.");
+      return;
+    }
+  
   };
   
-  // gabi aqui eu coloque esse uri para buscar uma imagem da internet, mas você pode colocar a sua imagem local
   return (
     <View style={styles.container}>
         <Image 
-        source={{ uri: 'https://loodibee.com/wp-content/uploads/International-Pokemon-logo.png' }} style={styles.logo} 
+        source={require('../../assets/logo.png')} style={styles.logo} 
         />
-        <Text style={styles.description}> Faça parte da nossa comunidade e e crie sua própria Pokedéx!</Text>
+        <Text style={styles.header}>Registo</Text> 
+        <Text style={styles.description}> Faça parte da nossa comunidade e crie sua própria Pokedéx com os seus favoritos e capturados! </Text>
   
         <View style={styles.form}>
           <TextInput
@@ -67,7 +98,7 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
         </View>
   
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <Text style={styles.loginLink}>JA possui conta? <Text style={styles.link}>Faça seu Login</Text></Text>
+          <Text style={styles.loginLink}>Ja possui conta? <Text style={styles.link}>Faça seu Login</Text></Text>
         </TouchableOpacity>
       </View>
     );
@@ -84,16 +115,17 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
       alignItems: "center"
     },
     logo: {
-      width: 100,
-      height: 100,
+      width: 200,
+      height: 200,
       marginBottom: 20,
       resizeMode: "contain",
+      transform: [{ scale: 1.6 }],
     },
     header: {
-      fontSize: 24,
+      fontSize: 32,
       fontWeight: "bold",
       color: "#fff",
-      marginBottom: 10,
+      marginBottom: 20,
     },
     description: {
       fontSize: 16,
@@ -108,7 +140,7 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
       height: 50,
       borderColor: "#ccc",
       borderWidth: 1,
-      borderRadius: 5,
+      borderRadius: 4,
       paddingHorizontal: 10,
       marginBottom: 15,
       backgroundColor: "#fff",
@@ -121,7 +153,7 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
       marginTop: 10,
     },
     buttonText:{
-      color: "#16161A",
+      color: "#316BB3",
       fontWeight: "bold",
       fontSize: 16,
     },

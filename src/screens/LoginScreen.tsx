@@ -2,40 +2,53 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Button } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import { useAuth } from "../navegation/AuthContext";
+import db from "../database/database";
 // Removed incorrect import of LoginScreenProps
 
 type RootStackParamList = {
   Login: undefined;
   Register: undefined;
-  Home: undefined;
+  Pokedex: undefined;
 };
 
-type LoginScreenProps = NativeStackScreenProps<RootStackParamList, "Login"> & {
-  setIsUserLoggedIn: (value: boolean) => void;
-};
+type LoginScreenProps = NativeStackScreenProps<RootStackParamList, "Login">;
 
-export default function LoginScreen({ navigation, setIsUserLoggedIn }: LoginScreenProps) {
+export default function LoginScreen({ navigation }: LoginScreenProps) {
+  const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!username || !password) {
-      alert("Preencha todos os campos");
+      alert("Todos os campos são obrigatórios");
       return;
     }
+
+    try {
+      const result = await db.getFirstAsync(
+        `SELECT * FROM users WHERE login = ? AND password = ?`, 
+        [username, password]
+      );
+      
+      if (!result) {
+        alert ("Login ou senha inválidos.")
+        return;
+      }
+
+      login(); //atualiza o estado global
+
+    } catch (error) {
+      console.error("Erro ao tentar login:", error);
+      alert("Erro ao fazer login");
+    }
     
-    // Simulação de autenticação
-    alert("Login realizado com sucesso");
-    setIsUserLoggedIn(true);
-    navigation.replace("Home");
   };
 
-// gabi aqui eu coloque esse uri para buscar uma imagem da internet, mas você pode colocar a sua imagem local
-// o react não buscaas imagens da web ou de outro lugar sem isso
   return (
     <View style={styles.container}>
       <Image 
-      source={{ uri: 'https://loodibee.com/wp-content/uploads/International-Pokemon-logo.png' }} style={styles.logo} 
+      source={require('../../assets/logo.png')} style={styles.logo} 
       />
       <Text style={styles.header}>Login</Text> 
       <Text style={styles.description}> Bem Vindo de Volta!! {"\n"} Vamos iniciar nossa aventura?</Text>
@@ -78,13 +91,14 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   logo: {
-    width: 300,
-    height: 300,
+    width: 200,
+    height: 200,
     marginBottom: 0,
     resizeMode: "contain",
+    transform: [{ scale: 1.6 }],
   },
   header: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: "bold",
     color: "#fff",
     marginBottom: 10,
@@ -115,7 +129,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   buttonText:{
-    color: "#16161A",
+    color: "#316BB3",
     fontWeight: "bold",
     fontSize: 16,
   },

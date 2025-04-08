@@ -50,6 +50,7 @@ export default function PokedexScreen() {
       setPokemonList((prevList) => [...prevList, ...detailedPokemons]); // Adiciona os novos Pokémon à lista existente
       setOffset((prevOffset) => prevOffset + 10); // Incrementa o offset para a próxima página
       setHasMore(data.next !== null); // Verifica se há mais dados para carregar
+    
     } catch (error) {
       console.error("Erro ao buscar Pokémon:", error);
     } finally {
@@ -124,7 +125,6 @@ export default function PokedexScreen() {
   );
 }
 
-// Estilos do componente
 const styles = StyleSheet.create({
   container: {
     flex: 1,
