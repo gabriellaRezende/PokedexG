@@ -1,4 +1,12 @@
-import React, { useEffect, useState } from "react";
+
+// Foi removido o codigo por motivos de não possuir mais uma tela home.
+// O código original foi comentado e mantido para referência futura.
+
+
+
+
+
+/* import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Switch, ActivityIndicator, GestureResponderEvent } from "react-native";
 
 export default function HomeScreen() {
@@ -18,9 +26,9 @@ export default function HomeScreen() {
     } finally {
       setIsLoading(false); // Finaliza o carregamento
     }
-  };
+  }; */
 
-  // Busca o nome do usuário ao carregar a tela
+  /* // Busca o nome do usuário ao carregar a tela
   useEffect(() => {
     fetchUserName();
   }, []);
@@ -41,10 +49,10 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Nome do usuário */}
+      {/* Nome do usuário }
       <Text style={styles.welcomeText}>Olá, {userName}!</Text>
 
-      {/* Switch para alternar entre favoritos e capturados */}
+      {/* Switch para alternar entre favoritos e capturados }
       <View style={styles.switchContainer}>
         <Text style={styles.switchLabel}>
           {showFavorites ? "Pokémons Favoritos" : "Pokémons Capturados"}
@@ -55,17 +63,17 @@ export default function HomeScreen() {
           thumbColor="#FFFFFF"
           trackColor={{ false: "#767577", true: "#FF0000" }}
         />
-      </View>
+      </View> */
 
-      {/* Lista de Pokémon (placeholder) */}
-      <View style={styles.listContainer}>
+      /* Lista de Pokémon (placeholder) */
+      /* <View style={styles.listContainer}>
         <Text style={styles.listText}>
           {showFavorites
             ? "Exibindo seus Pokémon favoritos..."
             : "Exibindo seus Pokémon capturados..."}
         </Text>
       </View>
-      {/* Botão de Logout */}
+      {/* Botão de Logout }
       <View style={styles.logoutContainer}>
         <Text style={styles.logoutButton} onPress={handleLogout}>
           Logout
@@ -73,9 +81,9 @@ export default function HomeScreen() {
       </View>
     </View>
   );
-}
+} */
 
-const styles = StyleSheet.create({
+/* const styles = StyleSheet.create({
   logoutContainer: {
     alignItems: "flex-end", // Alinha o botão à direita
     marginBottom: 10, // Espaçamento inferior
@@ -127,4 +135,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#FFFFFF",
   },
-});
+}); */ 

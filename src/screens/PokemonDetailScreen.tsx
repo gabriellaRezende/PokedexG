@@ -137,7 +137,7 @@ export default function PokemonDetailScreen() {
       <Text>
         {/* Popup de captura/liberação */}
         <View style={styles.nameContainer}>
-          <Text style={styles.name}>{pokemonDetails.name.toUpperCase()}</Text>
+          
           {showPopup && (
             <View style={styles.popup}>
               <Text style={styles.popupText}>{captureMessage}</Text>
@@ -145,11 +145,11 @@ export default function PokemonDetailScreen() {
           )}
         </View>
       </Text>
-      <Image source={{ uri: pokemonDetails.image3D }} style={styles.image3D} />
 
       {/* Contêiner da descrição */}
       <View style={styles.descriptionCard}>
-        <Image source={{ uri: pokemonDetails.image }} style={styles.smallImage} />
+      <Text style={styles.name}>{pokemonDetails.name.toUpperCase()}</Text>
+      <Image source={{ uri: pokemonDetails.image3D }} style={styles.image3D} />
         <Text style={styles.descriptionText}>{pokemonDetails.description}</Text>
         {/* Botão de captura/liberação */}
         <TouchableOpacity
@@ -282,11 +282,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF", // Cor de fundo do ícone
   },
   descriptionCard: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     backgroundColor: "#E0E0E0",
     borderRadius: 8,
-    padding: 10,
+    padding: 16,
     marginBottom: 20,
   },
   smallImage: {
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   descriptionText: {
     fontSize: 14,
     color: "#393D43",
-    flex: 1,
+    textAlign: "center",
   },
   captureButton: {
     marginLeft: 10,
@@ -423,11 +423,9 @@ const styles = StyleSheet.create({
     marginBlockStart: 0, // Espaçamento superior
   },
   name: {
-    fontSize: 15,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#FFFFFE",
-    flex: 20, // Faz o nome ocupar o espaço restante
-    textAlign: "left", // Alinha o texto à esquerda
+    color: "#F08030",
   },
   popup: {
     backgroundColor: "#Ff0000",
