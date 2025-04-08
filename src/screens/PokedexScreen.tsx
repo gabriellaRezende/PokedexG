@@ -1,6 +1,8 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { View, FlatList, TouchableOpacity, Image, Text, StyleSheet } from "react-native";
+import { AuthContext } from "../navegation/AuthContext"; // Ajuste o caminho conforme necessário
+import { usePokemonStatus } from "../hook/usePokemonstatus"; // Hook customizado para verificar favorito e capturado
 
 // Define o tipo do Pokémon
 type Pokemon = {
@@ -18,6 +20,8 @@ export default function PokedexScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [offset, setOffset] = useState(0); // Controle de offset para paginação
   const [hasMore, setHasMore] = useState(true); // Controle para saber se há mais dados
+
+  const { user } = useContext(AuthContext); // Obtém o usuário logado do contexto
 
   // Função para buscar Pokémon da API
   const fetchPokemon = async () => {
@@ -50,7 +54,7 @@ export default function PokedexScreen() {
       setPokemonList((prevList) => [...prevList, ...detailedPokemons]); // Adiciona os novos Pokémon à lista existente
       setOffset((prevOffset) => prevOffset + 10); // Incrementa o offset para a próxima página
       setHasMore(data.next !== null); // Verifica se há mais dados para carregar
-    
+
     } catch (error) {
       console.error("Erro ao buscar Pokémon:", error);
     } finally {
@@ -63,7 +67,7 @@ export default function PokedexScreen() {
     fetchPokemon();
   }, []);
 
-  // Função para determinar a cor do elemento com base no tipo do Pokémon
+  // Função para determinar a cor do chip de tipo
   function getTypeChipColor(type: string): import("react-native").ColorValue {
     const typeColors: { [key: string]: string } = {
       fire: "#F08030",
@@ -94,27 +98,58 @@ export default function PokedexScreen() {
       <FlatList
         data={pokemonList}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => navigation.navigate("PokemonDetail", { id: item.id })}
-          >
-            <Image source={{ uri: item.image }} style={styles.image} />
-            <View>
-              <Text style={styles.name}>{item.name}</Text>
-              <View style={styles.typesContainer}>
-                {item.types.map((type, index) => (
-                  <View
-                    key={index}
-                    style={[styles.typeChip, { backgroundColor: getTypeChipColor(type) }]}
-                  >
-                    <Text style={styles.typeChipText}>{type}</Text>
+        renderItem={({ item }) => {
+          const { isFavorited, isCaptured, toggleFav, toggleCap } = usePokemonStatus(item.id, user?.id);
+
+          function toggleFavorite(event: GestureResponderEvent): void {
+            throw new Error("Function not implemented.");
+          }
+
+          function toggleCaptured(event: GestureResponderEvent): void {
+            throw new Error("Function not implemented.");
+          }
+
+          return (
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() => navigation.navigate("PokemonDetail", { id: item.id })}
+            >
+              <Image source={{ uri: item.image }} style={styles.image} />
+              <View>
+                <Text style={styles.name}>{item.name}</Text>
+                <View style={styles.typesContainer}>
+                  {item.types.map((type, index) => (
+                    <View
+                      key={index}
+                      style={[styles.typeChip, { backgroundColor: getTypeChipColor(type) }]}
+                    >
+                      <Text style={styles.typeChipText}>{type}</Text>
+                    </View>
+                  ))}
+                </View>
+                {user && (
+                  <View style={styles.actionsContainer}>
+                    {/* Ícone de Favorito */}
+                    <TouchableOpacity onPress={toggleFavorite}>
+                      <Image
+                        source={isFavorited ? require("../../assets/star_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png") : require("../../assets/star_24dp_FFFF55_FILL1_wght400_GRAD0_opsz24.png")}
+                        style={styles.icon}
+                      />
+                    </TouchableOpacity>
+
+                    {/* Ícone de Capturado */}
+                    <TouchableOpacity onPress={toggleCaptured}>
+                    <Image
+  source={{ uri: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" }}
+  style={styles.icon}
+/>
+                    </TouchableOpacity>
                   </View>
-                ))}
+                )}
               </View>
-            </View>
-          </TouchableOpacity>
-        )}
+            </TouchableOpacity>
+          );
+        }}
         onEndReached={fetchPokemon} // Chama a função para carregar mais Pokémon
         onEndReachedThreshold={0.5} // Define o quão próximo do final da lista o evento é disparado
         ListFooterComponent={
@@ -164,5 +199,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#FFFFFE",
+  },
+  actionsContainer: {
+    flexDirection: "row",
+    marginTop: 10,
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    marginRight: 10,
   },
 });

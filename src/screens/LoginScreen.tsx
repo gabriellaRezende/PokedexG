@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { NativeStackScreenProps } from "@react-navegation/native-stack";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Button } from "react-native";
 import { TextInput } from "react-native-gesture-handler";

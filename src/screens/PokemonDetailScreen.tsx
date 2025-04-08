@@ -117,7 +117,7 @@ export default function PokemonDetailScreen() {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#F08030" />
+        <ActivityIndicator size="large" color="#FFCB05" />
         <Text style={styles.loadingText}>Carregando...</Text>
       </View>
     );
@@ -180,20 +180,11 @@ export default function PokemonDetailScreen() {
       </View>
       {/* Informações do Pokémon */}
       <View style={styles.infoCard}>
-        {/* Botão de Favorito */}
-        <TouchableOpacity
-          style={styles.favoriteButtonContainer}
-          onPress={() => setIsFavorite(!isFavorite)} // Alterna o estado de favorito
-        >
-          <Text
-            style={[
-              styles.favoriteButton,
-              { color: isFavorite ? "#FF0000" : "#FFFFFF" }, // Vermelho se favoritado, branco caso contrário
-            ]}
-          >
-            ♥
-          </Text>
-        </TouchableOpacity>
+        
+        {/* Habilidades */}
+        <View style={styles.blueContainer}>
+          <Text style={{ color: "#FFFFFF", fontSize: 16 }}>Habilidades: {pokemonDetails.abilities.join(", ")}</Text>
+        </View>
         {/* Altura */}
         <View style={styles.infoRow}>
           <Image
@@ -212,10 +203,7 @@ export default function PokemonDetailScreen() {
           <Text style={styles.infoText}>Peso: {pokemonDetails.weight / 10} kg</Text>
         </View>
 
-        {/* Habilidades */}
-        <View style={styles.blueContainer}>
-          <Text style={{ color: "#FFFFFF", fontSize: 16 }}>Habilidades: {pokemonDetails.abilities.join(", ")}</Text>
-        </View>
+        
         {/* Tipos */}
         <Text style={styles.infoTitle}>Tipos:</Text>
         <View style={styles.typesContainer}>
@@ -254,32 +242,23 @@ export default function PokemonDetailScreen() {
 
 const styles = StyleSheet.create({
   blueContainer: {
-    backgroundColor: "#3B4CCA", // Cor de fundo azul
-    padding: 10, // Espaçamento interno
-    borderRadius: 15, // Bordas arredondadas
-    marginBottom: 5, // Espaçamento inferior
-    alignItems: "center", // Centraliza os itens horizontalmente
-    justifyContent: "center", // Centraliza os itens verticalmente
-  },
-  favoriteButtonContainer: {
-    alignSelf: "flex-end", // Move o botão para o lado direito
-    marginBottom: 10, // Espaçamento inferior
-  },
-  favoriteButton: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#FFFFFF",
+    backgroundColor: "#3B4CCA",
+    padding: 10, 
+    borderRadius: 15, 
+    marginBottom: 16, 
+    alignItems: "center",
+    justifyContent: "center", 
   },
   infoRow: {
-    flexDirection: "row", // Alinha o ícone e o texto horizontalmente
-    alignItems: "center", // Centraliza verticalmente
-    marginBottom: 10, // Espaçamento inferior entre as linhasS
+    flexDirection: "row", 
+    alignItems: "center", 
+    marginBottom: 10, 
   },
   infoIcon: {
-    width: 24, // Largura do ícone
-    height: 24, // Altura do ícone
-    marginRight: 10, // Espaçamento entre o ícone e o texto
-    backgroundColor: "#FFFFFF", // Cor de fundo do ícone
+    width: 24, 
+    height: 24, 
+    marginRight: 8,
+    backgroundColor: "#FFFFFF", 
   },
   descriptionCard: {
     flexDirection: "column",
@@ -288,11 +267,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
     marginBottom: 20,
-  },
-  smallImage: {
-    width: 80,
-    height: 80,
-    marginRight: 10,
   },
   descriptionText: {
     fontSize: 14,
@@ -415,17 +389,17 @@ const styles = StyleSheet.create({
     color: "#FF6B6B",
   },
   nameContainer: {
-    flexDirection: "row", // Alinha o nome e o popup horizontalmente
-    alignItems: "center", // Centraliza verticalmente
-    justifyContent: "space-between", // Espaça os elementos
-    width: "100%", // Ocupa toda a largura disponível
-    marginBottom: 0, // Espaçamento inferior
-    marginBlockStart: 0, // Espaçamento superior
+    flexDirection: "row", 
+    alignItems: "center", 
+    justifyContent: "space-between", 
+    width: "100%", 
+    marginBottom: 0, 
+    marginBlockStart: 0, 
   },
   name: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#F08030",
+    color: "#16161A",
   },
   popup: {
     backgroundColor: "#Ff0000",
