@@ -1,4 +1,4 @@
-# Welcome to your Expo app 👋
+# Pokedex React Native <a href="https://emoji.gg/emoji/pokeball"><img src="https://cdn3.emoji.gg/emojis/pokeball.png" width="30px" height="30px" alt="pokeball"></a>
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
