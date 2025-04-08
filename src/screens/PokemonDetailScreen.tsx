@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
+import { View, Text, Image, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity } from "react-native";
 import { RouteProp, useRoute } from "@react-navigation/native";
 
 type PokemonDetailScreenRouteProp = RouteProp<{ PokemonDetail: { id: number } }, "PokemonDetail">;
@@ -14,6 +14,7 @@ type PokemonDetails = {
   stats: { name: string; value: number }[];
   description: string;
   image3D: string;
+  image: string;
   weaknesses: { name: string; color: string }[];
 };
 
@@ -22,6 +23,10 @@ export default function PokemonDetailScreen() {
   const { id } = route.params;
   const [pokemonDetails, setPokemonDetails] = useState<PokemonDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCaptured, setIsCaptured] = useState(false); // Estado para capturar ou liberar o Pokémon
+  const [isFavorite, setIsFavorite] = useState(false); // Estado para controlar o favorito
+  const [captureMessage, setCaptureMessage] = useState(""); // Mensagem de captura/liberação
+  const [showPopup, setShowPopup] = useState(false); // Estado para exibir o popup
 
   const typeColors: { [key: string]: string } = {
     fire: "#F08030",
@@ -80,20 +85,21 @@ export default function PokemonDetailScreen() {
       const details: PokemonDetails = {
         id: data.id,
         name: data.name,
-        types: data.types.map((t: { type: { name: string } }) => ({
+        types: data.types.map((t: { type: { name: string; }; }) => ({
           name: t.type.name,
           color: typeColors[t.type.name] || "#A8A8A8",
         })),
         height: data.height,
         weight: data.weight,
-        abilities: data.abilities.map((a: { ability: { name: string } }) => a.ability.name),
-        stats: data.stats.map((s: { stat: { name: string }; base_stat: number }) => ({
+        abilities: data.abilities.map((a: { ability: { name: string; }; }) => a.ability.name),
+        stats: data.stats.map((s: { stat: { name: string; }; base_stat: number; }) => ({
           name: s.stat.name,
           value: s.base_stat,
         })),
         description: descriptionEntry ? descriptionEntry.flavor_text.replace(/\n|\f/g, " ") : "Descrição não disponível.",
         image3D: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`,
         weaknesses,
+        image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png`,
       };
 
       setPokemonDetails(details);
@@ -127,77 +133,204 @@ export default function PokemonDetailScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Imagem e Descrição */}
-      <Text style={styles.name}>{pokemonDetails.name.toUpperCase()}</Text>
+      {/* Imagem grande */}
+      <Text>
+        {/* Popup de captura/liberação */}
+        <View style={styles.nameContainer}>
+          <Text style={styles.name}>{pokemonDetails.name.toUpperCase()}</Text>
+          {showPopup && (
+            <View style={styles.popup}>
+              <Text style={styles.popupText}>{captureMessage}</Text>
+            </View>
+          )}
+        </View>
+      </Text>
       <Image source={{ uri: pokemonDetails.image3D }} style={styles.image3D} />
-      <Text style={styles.description}>{pokemonDetails.description}</Text>
 
+      {/* Contêiner da descrição */}
+      <View style={styles.descriptionCard}>
+        <Image source={{ uri: pokemonDetails.image }} style={styles.smallImage} />
+        <Text style={styles.descriptionText}>{pokemonDetails.description}</Text>
+        {/* Botão de captura/liberação */}
+        <TouchableOpacity
+          style={styles.captureButton}
+          onPress={() => {
+            setIsCaptured(!isCaptured); // Alterna entre capturado e liberado
+            const message = !isCaptured
+              ? `${pokemonDetails.name} foi capturado!`
+              : `${pokemonDetails.name} foi liberado!`;
+            setCaptureMessage(message); // Define a mensagem
+            setShowPopup(true); // Exibe o popup
+
+            // Oculta o popup após segundos
+            setTimeout(() => {
+              setShowPopup(false);
+            }, 4000);
+          }}
+        >
+          <Image
+            source={{
+              uri: isCaptured
+                ? "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" // Pokébola fechada
+                : "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png", // Pokébola aberta
+            }}
+            style={styles.pokeballImage}
+          />
+        </TouchableOpacity>
+      </View>
       {/* Informações do Pokémon */}
       <View style={styles.infoCard}>
-        <Text style={styles.infoText}>Altura: {pokemonDetails.height / 10} m</Text>
-        <Text style={styles.infoText}>Peso: {pokemonDetails.weight / 10} kg</Text>
-        <Text style={styles.infoText}>Habilidades: {pokemonDetails.abilities.join(", ")}</Text>
-      </View>
-
-      {/* Tipos */}
-      <Text style={styles.infoTitle}>Tipos:</Text>
-      <View style={styles.typesContainer}>
-        {pokemonDetails.types.map((type, index) => (
-          <View key={index} style={[styles.typeChip, { backgroundColor: type.color }]}>
-            <Text style={styles.typeChipText}>{type.name}</Text>
-          </View>
-        ))}
-      </View>
-
-      {/* Fraquezas */}
-      <Text style={styles.infoTitle}>Fraquezas:</Text>
-      <View style={styles.typesContainer}>
-        {pokemonDetails.weaknesses.map((weakness, index) => (
-          <View key={index} style={[styles.typeChip, { backgroundColor: weakness.color }]}>
-            <Text style={styles.typeChipText}>{weakness.name}</Text>
-          </View>
-        ))}
-      </View>
-
-      {/* Estatísticas */}
-      <Text style={styles.infoTitle}>Estatísticas:</Text>
-      {pokemonDetails.stats.map((stat, index) => (
-        <View key={index} style={styles.statContainer}>
-          <Text style={styles.statName}>{stat.name.toUpperCase()}</Text>
-          <View style={styles.statBarBackground}>
-            <View style={[styles.statBar, { width: `${(stat.value / 255) * 100}%` }]} />
-          </View>
-          <Text style={styles.statValue}>{stat.value}</Text>
+        {/* Botão de Favorito */}
+        <TouchableOpacity
+          style={styles.favoriteButtonContainer}
+          onPress={() => setIsFavorite(!isFavorite)} // Alterna o estado de favorito
+        >
+          <Text
+            style={[
+              styles.favoriteButton,
+              { color: isFavorite ? "#FF0000" : "#FFFFFF" }, // Vermelho se favoritado, branco caso contrário
+            ]}
+          >
+            ♥
+          </Text>
+        </TouchableOpacity>
+        {/* Altura */}
+        <View style={styles.infoRow}>
+          <Image
+            source={{ uri: "https://img.icons8.com/ios/50/000000/height.png" }} // Ícone de altura
+            style={styles.infoIcon}
+          />
+          <Text style={styles.infoText}>Altura: {pokemonDetails.height / 10} m</Text>
         </View>
-      ))}
+
+        {/* Peso */}
+        <View style={styles.infoRow}>
+          <Image
+            source={{ uri: "https://img.icons8.com/ios/50/000000/scale.png" }} // Ícone de peso
+            style={styles.infoIcon}
+          />
+          <Text style={styles.infoText}>Peso: {pokemonDetails.weight / 10} kg</Text>
+        </View>
+
+        {/* Habilidades */}
+        <View style={styles.blueContainer}>
+          <Text style={{ color: "#FFFFFF", fontSize: 16 }}>Habilidades: {pokemonDetails.abilities.join(", ")}</Text>
+        </View>
+        {/* Tipos */}
+        <Text style={styles.infoTitle}>Tipos:</Text>
+        <View style={styles.typesContainer}>
+          {pokemonDetails.types.map((type, index) => (
+            <View key={index} style={[styles.typeChip, { backgroundColor: type.color }]}>
+              <Text style={styles.typeChipText}>{type.name}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Fraquezas */}
+        <Text style={styles.infoTitle}>Fraquezas:</Text>
+        <View style={styles.typesContainer}>
+          {pokemonDetails.weaknesses.map((weakness, index) => (
+            <View key={index} style={[styles.typeChip, { backgroundColor: weakness.color }]}>
+              <Text style={styles.typeChipText}>{weakness.name}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Estatísticas */}
+        <Text style={styles.infoTitle}>Estatísticas:</Text>
+        {pokemonDetails.stats.map((stat, index) => (
+          <View key={index} style={styles.statContainer}>
+            <Text style={styles.statName}>{stat.name.toUpperCase()}</Text>
+            <View style={styles.statBarBackground}>
+              <View style={[styles.statBar, { width: `${(stat.value / 255) * 100}%` }]} />
+            </View>
+            <Text style={styles.statValue}>{stat.value}</Text>
+          </View>
+        ))}
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  blueContainer: {
+    backgroundColor: "#3B4CCA", // Cor de fundo azul
+    padding: 10, // Espaçamento interno
+    borderRadius: 15, // Bordas arredondadas
+    marginBottom: 5, // Espaçamento inferior
+    alignItems: "center", // Centraliza os itens horizontalmente
+    justifyContent: "center", // Centraliza os itens verticalmente
+  },
+  favoriteButtonContainer: {
+    alignSelf: "flex-end", // Move o botão para o lado direito
+    marginBottom: 10, // Espaçamento inferior
+  },
+  favoriteButton: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
+  infoRow: {
+    flexDirection: "row", // Alinha o ícone e o texto horizontalmente
+    alignItems: "center", // Centraliza verticalmente
+    marginBottom: 10, // Espaçamento inferior entre as linhasS
+  },
+  infoIcon: {
+    width: 24, // Largura do ícone
+    height: 24, // Altura do ícone
+    marginRight: 10, // Espaçamento entre o ícone e o texto
+    backgroundColor: "#FFFFFF", // Cor de fundo do ícone
+  },
+  descriptionCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#E0E0E0",
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 20,
+  },
+  smallImage: {
+    width: 80,
+    height: 80,
+    marginRight: 10,
+  },
+  descriptionText: {
+    fontSize: 14,
+    color: "#393D43",
+    flex: 1,
+  },
+  captureButton: {
+    marginLeft: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  pokeballImage: {
+    width: 40,
+    height: 40,
+  },
+  popupText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  captureMessage: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#",
+    textAlign: "center",
+  },
   container: {
     flexGrow: 1,
     alignItems: "center",
     backgroundColor: "#393D43",
     padding: 20,
   },
-  name: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#FFFFFE",
-    marginBottom: 20,
-  },
   image3D: {
     width: 250,
     height: 250,
     marginBottom: 20,
-  },
-  description: {
-    fontSize: 16,
-    fontStyle: "italic",
-    color: "#FFFFFE",
-    marginBottom: 20,
-    textAlign: "center",
   },
   infoCard: {
     width: "100%",
@@ -214,18 +347,21 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#F08030",
+    color: "#FFFFFE",
     marginTop: 10,
+    marginBottom: 10,
   },
   typesContainer: {
     flexDirection: "row",
+    flexWrap: "wrap",
     marginBottom: 10,
   },
   typeChip: {
     paddingVertical: 4,
     paddingHorizontal: 8,
     borderRadius: 16,
-    marginRight: 8,
+    marginRight: 6,
+    marginBottom: 6,
   },
   typeChipText: {
     fontSize: 16,
@@ -243,13 +379,14 @@ const styles = StyleSheet.create({
   },
   statBarBackground: {
     height: 10,
-    backgroundColor: "#A8A8A8",
+    backgroundColor: "#FFFFFF",
+
     borderRadius: 5,
     overflow: "hidden",
   },
   statBar: {
     height: "100%",
-    backgroundColor: "#F08030",
+    backgroundColor: "#3B4CCA",
   },
   statValue: {
     fontSize: 14,
@@ -276,5 +413,27 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 18,
     color: "#FF6B6B",
+  },
+  nameContainer: {
+    flexDirection: "row", // Alinha o nome e o popup horizontalmente
+    alignItems: "center", // Centraliza verticalmente
+    justifyContent: "space-between", // Espaça os elementos
+    width: "100%", // Ocupa toda a largura disponível
+    marginBottom: 0, // Espaçamento inferior
+    marginBlockStart: 0, // Espaçamento superior
+  },
+  name: {
+    fontSize: 15,
+    fontWeight: "bold",
+    color: "#FFFFFE",
+    flex: 20, // Faz o nome ocupar o espaço restante
+    textAlign: "left", // Alinha o texto à esquerda
+  },
+  popup: {
+    backgroundColor: "#Ff0000",
+    padding: 10, // Espaçamento interno
+    borderRadius: 8, // Bordas arredondadas
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
