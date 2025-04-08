@@ -117,7 +117,7 @@ export default function PokemonDetailScreen() {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#F08030" />
+        <ActivityIndicator size="large" color="#FFCB05" />
         <Text style={styles.loadingText}>Carregando...</Text>
       </View>
     );
@@ -180,20 +180,12 @@ export default function PokemonDetailScreen() {
       </View>
       {/* Informações do Pokémon */}
       <View style={styles.infoCard}>
-        {/* Botão de Favorito */}
-        <TouchableOpacity
-          style={styles.favoriteButtonContainer}
-          onPress={() => setIsFavorite(!isFavorite)} // Alterna o estado de favorito
-        >
-          <Text
-            style={[
-              styles.favoriteButton,
-              { color: isFavorite ? "#FF0000" : "#FFFFFF" }, // Vermelho se favoritado, branco caso contrário
-            ]}
-          >
-            ♥
-          </Text>
-        </TouchableOpacity>
+        
+        {/* Habilidades */}
+        <View style={styles.blueContainer}>
+          <Text style={{ color: "#FFFFFF", fontSize: 16 }}>Habilidades: {pokemonDetails.abilities.join(", ")}</Text>
+        </View>
+        
         {/* Altura */}
         <View style={styles.infoRow}>
           <Image
@@ -212,10 +204,7 @@ export default function PokemonDetailScreen() {
           <Text style={styles.infoText}>Peso: {pokemonDetails.weight / 10} kg</Text>
         </View>
 
-        {/* Habilidades */}
-        <View style={styles.blueContainer}>
-          <Text style={{ color: "#FFFFFF", fontSize: 16 }}>Habilidades: {pokemonDetails.abilities.join(", ")}</Text>
-        </View>
+        
         {/* Tipos */}
         <Text style={styles.infoTitle}>Tipos:</Text>
         <View style={styles.typesContainer}>
@@ -257,18 +246,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#3B4CCA", // Cor de fundo azul
     padding: 10, // Espaçamento interno
     borderRadius: 15, // Bordas arredondadas
-    marginBottom: 5, // Espaçamento inferior
+    marginBottom: 16, // Espaçamento inferior
     alignItems: "center", // Centraliza os itens horizontalmente
     justifyContent: "center", // Centraliza os itens verticalmente
-  },
-  favoriteButtonContainer: {
-    alignSelf: "flex-end", // Move o botão para o lado direito
-    marginBottom: 10, // Espaçamento inferior
-  },
-  favoriteButton: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#FFFFFF",
   },
   infoRow: {
     flexDirection: "row", // Alinha o ícone e o texto horizontalmente
@@ -425,7 +405,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#F08030",
+    color: "#16161A",
   },
   popup: {
     backgroundColor: "#Ff0000",
